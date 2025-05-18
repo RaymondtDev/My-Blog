@@ -1,0 +1,139 @@
+.admin-container {
+  background-color: var(--secondary-color);
+  padding: 0;
+}
+
+.admin-sidebar {
+  background-color: var(--secondary-color);
+  height: 100%;
+  width: 100%;
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.admin-sidebar div {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-sidebar .sidebar-head {
+  padding: 1em;
+  border-bottom: 2px solid #d4d4d4;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.admin-sidebar .sidebar-head h1 {
+  margin: 0.8em 0;
+}
+
+.admin-sidebar .sidebar-head .cross {
+  visibility: visible;
+  width: 30px;
+  aspect-ratio: 1;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.admin-sidebar .sidebar-head .cross .bar {
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+
+  &:first-child {
+    transform: rotate(45deg);
+    position: absolute;
+  }
+
+  &:last-child {
+    transform: rotate(-45deg);
+  }
+}
+
+.admin-sidebar div a {
+  padding: 1em 0;
+  color: var(--primary-color);
+  font-weight: bold;
+  padding: 1em;
+}
+
+.admin-sidebar .logout-button {
+  padding: 1em;
+  font-weight: bold;
+  color: red;
+  border: 2px solid red;
+  margin: 0 1em 1em 1em;
+  text-align: center;
+}
+
+.admin-sidebar div a:active {
+  background-color: #d4d4d4;
+}
+
+.admin-navbar {
+  background-color: var(--secondary-color);
+  width: 100%;
+  padding: 0 1em;
+  display: flex;
+  align-items: center;
+}
+
+.admin-navbar .hamburger {
+  height: 30px;
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  cursor: pointer;
+  margin-right: 2em;
+}
+
+.admin-navbar .hamburger .bar {
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.admin-content {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 1em;
+}
+
+.post-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* media query desktop */
+@media (min-width: 768px) {
+  .admin-container {
+    grid-template-columns: 20% 80%;
+    grid-template-rows: 10% 90%;
+  }
+
+  .admin-sidebar {
+    grid-row: span 2;
+    height: 100%;
+    width: 100%;
+    flex-direction: column;
+    border-right: 2px solid #d4d4d4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .admin-sidebar .sidebar-head .cross {
+    visibility: hidden;
+  }
+}

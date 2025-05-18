@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <header>
+      <a href="/">
+        <h1>Raymond's Blog</h1>
+      </a>
+      <% if (admin) { %>
+      <a href="/admin" class="button">Dashboard</a>
+      <% } else { %>
+      <a href="/login" class="button">Admin Login</a>
+      <% } %>
+    </header>
+    <main>
+      <article class="post-content">
+        <small>Published on: <%= post.created_at %></small>
+        <h2><%= post.title %></h2>
+        <p>Created by: <%= admin.username %></p>
+        <div class="post-body"><%- renderedContent %></div>
+      </article>
+    </main>
+  </body>
+</html>

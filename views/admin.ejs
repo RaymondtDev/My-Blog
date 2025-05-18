@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/admin.css">
+  </head>
+  <body>
+    <main class="admin-container">
+      <aside class="admin-sidebar">
+        <div>
+          <div class="sidebar-head">
+            <h1>Dashboard</h1>
+            <div class="cross">
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </div>
+          </div>
+          <a href="/">My Blog</a>
+          <a href="/admin/posts/new">Create New Post</a>
+        </div>
+        <a href="/logout" class="logout-button">Logout</a>
+      </aside>
+      <nav class="admin-navbar">
+        <div class="hamburger">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <h1>Welcome, <%= admin.username %></h1>
+      </nav>
+      <div class="admin-content">
+        <% if (posts && posts.length) { %>
+        <div class="posts-container">
+          <% posts.forEach(post => { %>
+          <!-- render post -->
+          <div class="post-card">
+            <div class="post-card-head">
+              <a href="/posts/<%= post.id %>">
+                <h3><%= post.title %></h3>
+              </a>
+              <small>Created by <%= admin.username %></small>
+            </div>
+            <div class="post-card-content">
+              <p><%= post.content.substring(0, 200) %>...</p>
+            </div>
+            <div class="post-card-buttons">
+              <a href="#">Edit</a>
+              <a href="/admin/posts/<%= post.id %>/delete">Delete</a>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+        <% } else { %>
+        <p>No posts found.</p>
+        <% } %>
+      </div>
+    </main>
+  </body>
+</html>

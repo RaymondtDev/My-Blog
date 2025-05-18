@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <main>
+      <div class="form">
+        <a href="/" class="back-link">
+          <img src="../assets/icons8-back-key-48.png" alt="icon" />
+          <p>Go Back</p>
+        </a>
+        <h1>Login</h1>
+        <form action="/login" method="post">
+          <% if (typeof errors !== "undefined" && errors.length) { %> <%
+          errors.forEach(error => { %>
+          <p class="error"><%= error %></p>
+          <% }) %> <% } %>
+          <script>
+            setTimeout(() => {
+              document
+                .querySelectorAll(".error")
+                .forEach((el) => (el.style.display = "none"));
+            }, 3000);
+          </script>
+          <label for="email">Email:</label><br />
+          <input type="email" id="email" name="email" required /><br />
+          <label for="password">Password:</label><br />
+          <input type="password" id="password" name="password" required /><br />
+
+          <button type="submit">Login</button>
+          <p>Not registered? <a href="/register">Register</a></p>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

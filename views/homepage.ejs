@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+  </head>
+  <body>
+    <header>
+      <h1>Raymond's Blog</h1>
+      <% if (admin) { %>
+      <a href="/admin" class="button">Dashboard</a>
+      <% } else { %>
+      <a href="/login" class="button">Admin Login</a>
+      <% } %>
+    </header>
+    <main>
+      <% if (posts && posts.length) { %>
+      <div class="posts-container">
+        <% posts.forEach(post => { %>
+        <!-- render post -->
+        <div class="post-card">
+          <div class="post-card-head">
+            <a href="/posts/<%= post.id %>">
+              <h3><%= post.title %></h3>
+            </a>
+            <small>Created by <%= admin.username %></small>
+          </div>
+          <div class="post-card-content">
+            <p><%= post.content.substring(0, 200) %>...</p>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+      <% } else { %>
+      <p>No posts found.</p>
+      <% } %>
+    </main>
+  </body>
+</html>
