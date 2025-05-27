@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include('partials/head') %>
+    <link rel="stylesheet" href="/admin.css">
+    <style>
+      @import url("https://uicdn.toast.com/editor/latest/toastui-editor.min.css");
+
+      * {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --form-background: rgba(255, 255, 255, 0.5);
+        --input-background: rgb(224, 224, 224);
+        --primary-color: rgb(63, 131, 255);
+        --secondary-color: #f4f4f4;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        background-color: var(--secondary-color);
+        width: 100svw;
+        max-width: 100svw;
+        height: 100svh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      main {
+        width: 100%;
+        max-width: 100svw;
+        flex: 1;
+        display: grid;
+        place-items: center;
+        padding: 10px 0;
+      }
+
+      .form {
+        width: 95%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background-color: var(--form-background);
+        backdrop-filter: blur(10px);
+        padding: 0.5em 1em;
+        border-radius: 10px;
+        border: 2px solid var(--form-background);
+      }
+
+      .form form {
+        width: 100%;
+      }
+
+      .form h1 {
+        margin-top: 0;
+      }
+
+      .form .error {
+        color: red;
+        padding: 1.5em;
+        border: 2px solid red;
+        border-radius: 5px;
+      }
+
+      .form form label {
+        font-size: 1.25rem;
+      }
+
+      .form form input {
+        width: 100%;
+        max-width: 400px;
+        padding: 0.5em;
+        font-size: 1rem;
+        background-color: var(--input-background);
+        border: none;
+        border-radius: 5px;
+        margin-top: 0.5em;
+        margin-bottom: 1em;
+      }
+
+      .form form input:focus {
+        outline-color: var(--primary-color);
+      }
+
+      .editor-container {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .editor-container .textarea button {
+        background-color: transparent;
+      }
+
+      .toastui-editor-defaultUI {
+        width: 100%;
+        max-width: 100svw;
+      }
+
+      .toastui-editor-dropdown-toolbar {
+        width: 100%;
+        right: 0px;
+        overflow-y: hidden;
+      }
+
+      .ProseMirror.toastui-editor-contents {
+        padding: 1em;
+      }
+
+      .ProseMirror.toastui-editor-contents p {
+        font-size: 1rem;
+      }
+
+      .form form button {
+        padding: 1em;
+        border: none;
+        border-radius: 5px;
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: bold;
+        font-size: 1rem;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body class="body">
+    <main class="admin-container">
+      <aside class="admin-sidebar">
+        <div>
+          <div class="sidebar-head">
+            <h1>Dashboard</h1>
+            <div class="cross">
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </div>
+          </div>
+          <a href="/">My Blog</a>
+          <a href="/admin">Dashboard</a>
+          <a href="/admin/posts/new">Create New Post</a>
+        </div>
+        <a href="/logout" class="logout-button">Logout</a>
+      </aside>
+
+      <nav class="admin-navbar">
+        <div class="hamburger">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+        </div>
+        <h1>Welcome, <%= admin.username %></h1>
+      </nav>
+
+      <div class="form">
+        <h1>Edit Post</h1>
+        <form
+          action="/admin/posts/<%= post.id %>/update"
+          method="POST"
+          class="edit-post-form"
+          onsubmit="syncEditor()"
+        >
+          <% if (typeof errors !== "undefined" && errors.length) { %> <%
+          errors.forEach(error => { %>
+          <p class="error"><%= error %></p>
+          <% }) %> <% } %>
+          <script>
+            setTimeout(() => {
+              document
+                .querySelectorAll(".error")
+                .forEach((el) => (el.style.display = "none"));
+            }, 3000);
+          </script>
+          <label for="title" class="label">Title:</label><br />
+          <input
+            type="text"
+            id="title"
+            name="title"
+            required
+            class="input"
+            value="<%= post.title %>"
+          /><br />
+          <label for="content" class="label">Content:</label><br />
+
+          <div class="editor-container">
+            <div id="editor" class="textarea"></div>
+          </div>
+
+          <input
+            type="hidden"
+            name="content"
+            id="content"
+            class="input"
+          /><br />
+
+          <button type="submit" class="button">Create</button>
+        </form>
+      </div>
+    </main>
+
+    
+    <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+    <script>
+      const editor = new toastui.Editor({
+        el: document.getElementById("editor"),
+        initialEditType: "wysiwyg",
+        initialValue: `<%= post.content %>`,
+        previewStyle: "horizontal",
+      });
+
+      const syncEditor = () => {
+        const content = editor.getMarkdown();
+        document.getElementById("content").value = content;
+      };
+    </script>
+  </body>
+</html>

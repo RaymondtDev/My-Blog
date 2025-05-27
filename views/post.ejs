@@ -1,26 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <%- include('partials/head') %>
-  </head>
-  <body>
-    <header>
-      <a href="/">
-        <h1>Raymond's Blog</h1>
-      </a>
-      <% if (admin) { %>
+
+<head>
+  <%- include('partials/head') %>
+</head>
+
+<body>
+  <header>
+    <a href="/">
+      <h1>Raymond's Blog</h1>
+    </a>
+    <% if (admin) { %>
       <a href="/admin" class="button">Dashboard</a>
       <% } else { %>
-      <a href="/login" class="button">Admin Login</a>
-      <% } %>
-    </header>
-    <main>
-      <article class="post-content">
-        <small>Published on: <%= post.created_at %></small>
-        <h2><%= post.title %></h2>
-        <p>Created by: <%= admin.username %></p>
-        <div class="post-body"><%- renderedContent %></div>
-      </article>
-    </main>
-  </body>
+        <a href="/login" class="button">Admin Login</a>
+        <% } %>
+  </header>
+  <main>
+
+    <article class="post-content">
+      <small>Published on: <%= post.formattedDate %></small>
+      <h2>
+        <%= post.title %>
+      </h2>
+      <p>Created by: <%= admin.username %>
+      </p>
+      <div class="post-body"><%- renderedContent %></div>
+    </article>
+
+    <div class="comments-container">
+      <button id="comment-button">Comment</button>
+      <h3>Leave a Comment</h3>
+
+      <form action="/posts/<%= post.id %>/comment" method="POST" class="comment-form" onsubmit="syncEditor()">
+
+        <label for="username">Name:</label><br>
+        <input type="text" id="username" name="username" required /><br>
+
+        <label for="comment">Comment:</label><br>
+        <div class="editor-container">
+          <div id="editor" class="textarea"></div>
+        </div>
+
+        <input type="hidden" name="comment" id="comment"/><br>
+
+        <button type="submit">Submit</button>
+      </form>
+      <div class="comments">
+        <h3>Comments</h3>
+        <% if (renderedComments && renderedComments.length) { %>
+          <% renderedComments.forEach(comment=> { %>
+            <div class="comment">
+              <p>Comment by <strong><%= comment.username %></strong></p>
+              <small><%= comment.created_at %></small>
+              <div><%- comment.content %></div>
+            </div>
+          <% }) %>
+          <% } else { %>
+            <p>No comments yet. Be the first to comment.</p>
+          <% } %>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+  <script>
+    const commentButton = document.getElementById('comment-button');
+    const commentForm = document.querySelector('.comment-form');
+
+    commentButton.addEventListener('click', () => {
+      commentForm.classList.toggle('hidden');
+      commentButton.textContent = commentForm.classList.contains('hidden')
+        ? 'Comment'
+        : 'Hide Comment Form';
+    });
+    // Hide comment form initially
+    commentForm.classList.add('hidden');
+
+    const editor = new toastui.Editor({
+      el: document.getElementById("editor"),
+      initialEditType: "wysiwyg",
+      previewStyle: "horizontal",
+    });
+
+    const syncEditor = () => {
+      const content = editor.getMarkdown();
+      document.getElementById("comment").value = content;
+    };
+  </script>
+</body>
+
 </html>

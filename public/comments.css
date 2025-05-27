@@ -1,0 +1,82 @@
+@import url("https://uicdn.toast.com/editor/latest/toastui-editor.min.css");
+
+:root {
+  --form-background: rgba(255, 255, 255, 0.5);
+  --input-background: rgb(224, 224, 224);
+  --primary-color: rgb(63, 131, 255);
+  --secondary-color: #f4f4f4;
+}
+
+.comments-container {
+  width: 90%;
+  max-width: 800px;
+  background-color: var(--form-background);
+  padding: 1em;
+}
+
+.comment-form {
+  width: 100%;
+}
+
+.comment-form label {
+  font-size: 1.25rem;
+}
+
+.comment-form input {
+  width: 100%;
+  max-width: 400px;
+  padding: 0.5em;
+  font-size: 1rem;
+  background-color: var(--input-background);
+  border: none;
+  border-radius: 5px;
+  margin-top: 0.5em;
+  margin-bottom: 1em;
+}
+
+.comment-form input:focus {
+  outline-color: var(--primary-color);
+}
+
+.editor-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+.editor-container .textarea button {
+  background-color: transparent;
+}
+
+.toastui-editor-defaultUI {
+  width: 100%;
+  max-width: 100svw;
+}
+
+.toastui-editor-dropdown-toolbar {
+  width: 100%;
+  right: 0px;
+  overflow-y: hidden;
+}
+
+.ProseMirror.toastui-editor-contents {
+  padding: 1em;
+}
+
+.ProseMirror.toastui-editor-contents p {
+  font-size: 1rem;
+}
+
+.comment-form button, #comment-button {
+  padding: 1em;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.comment-form.hidden {
+  display: none;
+}

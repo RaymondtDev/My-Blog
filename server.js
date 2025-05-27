@@ -33,6 +33,19 @@ const createTables = db.transaction(() => {
       password TEXT NOT NULL
     )`
   ).run();
+  // create comments table if not exist
+  // add post_id as foreign key to posts table
+  // comment table has id, username, content, created_at, FK post_id
+  db.prepare(
+    `CREATE TABLE IF NOT EXISTS comments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL,
+      content TEXT NOT NULL,
+      post_id INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (post_id) REFERENCES posts(id)
+    )`
+  ).run();
 });
 createTables();
 
@@ -75,7 +88,37 @@ app.get("/", (req, res) => {
   const posts = db
     .prepare("SELECT * FROM posts ORDER BY created_at DESC")
     .all();
+
   res.render("homepage", { posts, admin: res.admin });
+});
+
+// create comment
+app.post("/posts/:id/comment", (req, res) => {
+  const postId = req.params.id;
+  let { username, comment } = req.body;
+
+  // check if post exists
+  const post = db.prepare("SELECT * FROM posts WHERE id = ?").get(postId);
+  if (!post) {
+    return res.status(404).send("Post not found");
+  }
+
+  // sanitize input
+  const sanitizedUsername = sanitizeHTML(username.trim(), {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
+  const sanitizedComment = sanitizeHTML(comment.trim(), {
+    allowedTags: [],
+    allowedAttributes: {},
+  });
+
+  // insert comment into database
+  db.prepare(
+    "INSERT INTO comments (post_id, username, content) VALUES (?, ?, ?)"
+  ).run(postId, sanitizedUsername, sanitizedComment);
+
+  res.redirect(`/posts/${postId}`);
 });
 
 // get post by id
@@ -90,8 +133,33 @@ app.get("/posts/:id", (req, res) => {
   if (!post) {
     return res.status(404).send("Post not found");
   }
+
+  post.formattedDate = new Date(post.created_at).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  })
+
+  // get comments for post
+  const comments = db.prepare(`
+    SELECT * FROM comments WHERE post_id = ? ORDER BY created_at DESC
+  `).all(postId);
+
   const renderedContent = marked.parse(post.content);
-  res.render("post", { renderedContent, post, admin: res.admin });
+  const renderedComments = comments.map(comment => ({
+    ...comment,
+    content: marked.parse(comment.content),
+    created_at: new Date(comment.created_at).toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    })
+  }));
+  res.render("post", { renderedContent, post, admin: res.admin, renderedComments });
 });
 
 // get admin page
@@ -246,7 +314,7 @@ app.post("/admin/create-post", isLoggedIn, (req, res) => {
 });
 
 // update a post
-app.post("/admin/posts/:id", isLoggedIn, (req, res) => {
+app.post("/admin/posts/:id/update", isLoggedIn, (req, res) => {
   const errors = [];
   let { title, content } = req.body;
   const postId = req.params.id;
